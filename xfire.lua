@@ -29,7 +29,10 @@ wget.callbacks.download_child_p = function(urlpos, parent, depth, start_url_pars
   end
   
   if (downloaded[url] ~= true or addedtolist[url] ~= true) then
-    if item_type == "video" and string.match(url, "/"..item_value.."[a-z0-9]") and not string.match(url, "/"..item_value.."[a-z0-9][a-z0-9]") or html == 0 then
+    if item_type == "video" and string.match(urlpos["url"]["host"], "xfire%.com") and string.match(url, "/"..item_value.."[a-z0-9]") and not string.match(url, "/"..item_value.."[a-z0-9][a-z0-9]") then
+      addedtolist[url] = true
+      return true
+    elseif string.match(url, "https?://media%.xfire%.com/") and string.match(url, "%?bn=[0-9]+") and not string.match(url, "%?bn=46153") then
       addedtolist[url] = true
       return true
     else
@@ -48,7 +51,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
   end
  
   local function check(url)
-    if (downloaded[url] ~= true and addedtolist[url] ~= true) and string.match(string.match(newurl, "https?://([^/]+)/"), "xfire%.com") and string.match(newurl, "/"..item_value.."[a-z0-9]") and not string.match(newurl, "/"..item_value.."[a-z0-9][a-z0-9]") then
+    if (downloaded[url] ~= true and addedtolist[url] ~= true) and string.match(string.match(url, "https?://([^/]+)"), "xfire%.com") and string.match(url, "/"..item_value.."[a-z0-9]") and not string.match(url, "/"..item_value.."[a-z0-9][a-z0-9]") then
       if string.match(url, "&amp;") then
         table.insert(urls, { url=string.gsub(url, "&amp;", "&") })
         addedtolist[url] = true
@@ -60,7 +63,7 @@ wget.callbacks.get_urls = function(file, url, is_css, iri)
     end
   end
   
-  if item_type == "video" and string.match(string.match(url, "https?://([^/]+)/"), "xfire%.com") and string.match(newurl, "/"..item_value.."[a-z0-9]") and not (string.match(url, "%.mp4") or string.match(newurl, "/"..item_value.."[a-z0-9][a-z0-9]")) then
+  if item_type == "video" and string.match(string.match(url, "https?://([^/]+)/"), "xfire%.com") and string.match(url, "/"..item_value.."[a-z0-9]") and not (string.match(url, "%.mp4") or string.match(url, "/"..item_value.."[a-z0-9][a-z0-9]")) then
     html = read_file(file)
     if string.match(url, "/"..item_value.."[a-z0-9]%-[0-9]%.jpg") then
       check(string.match(url, "(.+/[a-z0-9]+%-)[0-9]%.jpg").."1.jpg")
