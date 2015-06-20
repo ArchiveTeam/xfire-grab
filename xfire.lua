@@ -108,9 +108,14 @@ wget.callbacks.httploop_result = function(url, err, http_stat)
       downloaded[url.url] = true
     end
   end
+
+  if string.match(url["url"], "/down%.html") then
+    return wget.actions.ABORT
+  end
   
   if status_code >= 500 or
-    (status_code >= 400 and status_code ~= 404 and status_code ~= 403) then
+    (status_code >= 400 and status_code ~= 404 and status_code ~= 403) or
+    status_code >= 300 then
 
     io.stdout:write("\nServer returned "..http_stat.statcode..". Sleeping.\n")
     io.stdout:flush()
