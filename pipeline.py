@@ -57,7 +57,7 @@ if not WGET_LUA:
 #
 # Update this each time you make a non-cosmetic change.
 # It will be added to the WARC files and reported to the tracker.
-VERSION = "20150620.04"
+VERSION = "20150701.01"
 USER_AGENT = 'ArchiveTeam'
 TRACKER_ID = 'xfire'
 TRACKER_HOST = 'tracker.archiveteam.org'
@@ -194,11 +194,23 @@ class WgetArgs(object):
         item['item_type'] = item_type
         item['item_value'] = item_value
         
-        assert item_type in ('video')
+        assert item_type in ('video', 'screenshot')
         
         if item_type == 'video':
             suffixes = string.digits + 'abcdef'
             for url in ['http://crash.xfire.com/video/{0}{1}/'.format(item_value, a) for a in suffixes]:
+                wget_args.append(url)
+        elif item_type == 'screenshot':
+            suffixes = string.digits
+            for url in ['http://screenshot.xfire.com/s/{0}{1}{2}-0.jpg'.format(item_value, a, b) for a in suffixes for b in suffixes]:
+                wget_args.append(url)
+            for url in ['http://screenshot.xfire.com/s/{0}{1}{2}-1.jpg'.format(item_value, a, b) for a in suffixes for b in suffixes]:
+                wget_args.append(url)
+            for url in ['http://screenshot.xfire.com/s/{0}{1}{2}-2.jpg'.format(item_value, a, b) for a in suffixes for b in suffixes]:
+                wget_args.append(url)
+            for url in ['http://screenshot.xfire.com/s/{0}{1}{2}-3.jpg'.format(item_value, a, b) for a in suffixes for b in suffixes]:
+                wget_args.append(url)
+            for url in ['http://screenshot.xfire.com/s/{0}{1}{2}-4.jpg'.format(item_value, a, b) for a in suffixes for b in suffixes]:
                 wget_args.append(url)
         else:
             raise Exception('Unknown item')
